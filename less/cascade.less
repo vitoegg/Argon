@@ -1,4 +1,4 @@
-// out: ../htdocs/luci-static/argon/css/cascade.css, compress: false , sourceMap: false
+// out: ../htdocs/luci-static/argon/css/cascade.css, compress: true, sourceMap: false
 /**
  *  Argon is a clean HTML5 theme for LuCI. It is based on luci-theme-material and Argon Template
  *
@@ -53,10 +53,6 @@
   --darker: black;
   --background-color: #f4f5f7;
   --login-form-bg-color: rgba(244, 245, 247, 0.8);
-  --blur-radius: 10px;
-  --blur-opacity: 0.5;
-  --blur-radius-dark: 10px;
-  --blur-opacity-dark: 0.5;
   --font-family-sans-serif: "Google Sans", "Microsoft Yahei", "WenQuanYi Micro Hei", "sans-serif", "Helvetica Neue", "Helvetica", "Hiragino Sans GB";
   --dropdown-arrow-icon: url("data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJjdXJyZW50Q29sb3IiIGQ9Ik01LjI5MyA5LjI5M2ExIDEgMCAwIDEgMS40MTQgMEwxMiAxNC41ODZsNS4yOTMtNS4yOTNhMSAxIDAgMSAxIDEuNDE0IDEuNDE0bC02IDZhMSAxIDAgMCAxLTEuNDE0IDBsLTYtNmExIDEgMCAwIDEgMC0xLjQxNCIvPjwvc3ZnPg==");
 }
@@ -235,6 +231,7 @@ select[multiple="multiple"] {
 
   &.error {
     background-color: var(--warning);
+    color: var(--yellow);
   }
 
   h4 {
@@ -269,6 +266,28 @@ select[multiple="multiple"] {
 
 .alert-message .btn {
   padding: .3rem .6rem;
+}
+
+/* LuCI's ui.js removes dismissed notifications after opacity finishes transitioning. */
+.alert-message {
+  transition: opacity .4s ease;
+
+  &.fade-out {
+    opacity: 0;
+  }
+
+  &.fade-in {
+    animation: alert-message-fade-in .4s ease;
+  }
+}
+
+@keyframes alert-message-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .container .alert,
@@ -475,14 +494,15 @@ table>thead>tr>th,
   flex: 1 1 auto;
 }
 
-tr>td,
-tr>th,
-.tr>.td,
-.tr>.th,
-.cbi-section-table-row::before,
-#cbi-wireless>#wifi_assoclist_table>.tr:nth-child(2) {
-  border-top: thin solid #ddd;
-  padding: 1.1em 1.25rem;
+body:not([data-page="admin-dashboard"]) {
+  tr>td,
+  tr>th,
+  .tr>.td,
+  .tr>.th,
+  .cbi-section-table-row::before,
+  #cbi-wireless>#wifi_assoclist_table>.tr:nth-child(2) {
+    padding: 1.1em 1.25rem;
+  }
 }
 
 #cbi-wireless .td,
@@ -1442,7 +1462,6 @@ body:not(.Interfaces) .cbi-rowstyle-2:first-child {
   cursor: pointer;
   user-select: none;
   font-size: 0;
-  color: #8898aa;
   background-color: currentColor;
   mask-image: var(--dropdown-arrow-icon);
   mask-repeat: no-repeat;
@@ -1803,6 +1822,11 @@ body.modal-overlay-active #modal_overlay {
 #view > .spinning::before,
 .alert-message.spinning::before {
   content: none;
+}
+
+#modal_overlay .alert-message.spinning::before,
+.modal.alert-message.spinning::before {
+  content: "";
 }
 
 
@@ -2273,7 +2297,6 @@ span[data-tooltip] .label {
   padding: 0.5rem;
   opacity: 0;
   transition: opacity .25s ease-in;
-  transform: translate(-50%, 10%);
 }
 
 .cbi-tooltip-container:hover .cbi-tooltip:not(:empty) {
@@ -2531,9 +2554,33 @@ pre.command-output {
   padding: 1.5rem;
 }
 
+.alert-message.spinning,
+.modal.alert-message.spinning {
+  position: relative;
+
+  &::before {
+    height: 16px;
+    width: 16px;
+    position: absolute;
+    top: 2rem;
+    left: 0.5rem;
+  }
+}
+
+.cbi-dropdown.cbi-button-positive>ul>li[display="0"] {
+  color: #fff;
+}
+
+.cbi-dropdown[open]>ul.dropdown>li[selected] {
+  color: #000;
+}
+
 
 /* page fix */
 @import url("page-fix.less");
 
 /* responsive */
 @import url("responsive.less");
+
+/* fixed dark palette */
+@import url("dark.less");

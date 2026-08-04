@@ -5,18 +5,6 @@
 // Optimized with LESS best practices
 // ==========================================================================
 
-// Mixins for common patterns
-.flex-center() {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.absolute-full() {
-    position: absolute;
-    inset: 0;
-}
-
 .viewport-height() {
     min-height: 100vh;
     min-height: 100dvh;
@@ -41,39 +29,13 @@
     flex-direction: column;
     overflow: hidden;
 
-    // Background video container
-    .video {
-        .absolute-full();
-        .flex-center();
-        background-color: var(--darker);
-        overflow: hidden;
-
-        video {
-            width: 100%;
-            height: auto;
-        }
-    }
-
-    // Volume control button
-    .volume-control {
-        position: fixed;
-        top: 1rem;
-        right: 1rem;
-        width: 1.5rem;
-        height: 1.5rem;
-        z-index: 5000;
-        cursor: pointer;
-        background: url(../img/volume_high.svg) no-repeat center/contain;
-
-        &.mute {
-            background-image: url(../img/volume_off.svg);
-        }
-    }
-
     // Main background image
     .main-bg {
-        .absolute-full();
-        background: url(../img/blank.png) no-repeat center/cover;
+        position: absolute;
+        inset: 0;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
         transition: all 0.5s ease;
     }
 
@@ -83,14 +45,14 @@
         z-index: 10;
         margin-left: 5%;
         display: flex;
-        width: min(26rem, calc(100% - 2.5rem));
+        width: ~"min(26rem, calc(100% - 2.5rem))";
         .viewport-height();
         flex-direction: column;
         overflow: hidden;
 
         background-color: var(--white);
-        backdrop-filter: blur(var(--blur-radius));
-        background-color: rgba(244, 245, 247, var(--blur-opacity));
+        backdrop-filter: blur(10px);
+        background-color: rgba(244, 245, 247, 0.5);
         box-shadow: rgba(0, 0, 0, 0.3) 0 0 50px 0px;
 
         // Login form
@@ -102,6 +64,8 @@
             flex-direction: column;
             align-items: center;
             max-width: 100%;
+            -webkit-backdrop-filter: none;
+            backdrop-filter: none;
 
 
             // Brand/Logo section
@@ -252,15 +216,15 @@
             line-height: 1.6rem;
             font-size: 0.75rem;
 
-            .ftc {
-                position: absolute;
-                bottom: 30px;
-                width: 100%;
-            }
-
             .luci-link {
                 display: block;
             }
         }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .login-page .main-bg {
+        background-position: 70% center;
     }
 }

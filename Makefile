@@ -8,9 +8,8 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-theme-argon
 LUCI_TITLE:=Argon Theme
-LUCI_DEPENDS:=+wget +jsonfilter
-PKG_VERSION:=2.4.3
-PKG_RELEASE:=20250722
+PKG_VERSION:=2.4.6
+PKG_RELEASE:=20260731
 
 CONFIG_LUCI_CSSTIDY:=
 
