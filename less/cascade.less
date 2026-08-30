@@ -1791,8 +1791,9 @@ body.modal-overlay-active #modal_overlay {
 }
 
 /* Fix: modal 内部的 alert-message 保持正常文档流，作为副标题显示 */
+/* relative 而非 static：布局等价，但保留定位上下文，否则 .spinning::before 会以 #modal_overlay 为包含块 */
 #modal_overlay .alert-message {
-  position: static;
+  position: relative;
   width: 100%;
   left: auto;
   top: auto;
@@ -1808,11 +1809,11 @@ body.modal-overlay-active #modal_overlay {
 
 .spinning::before {
   position: absolute;
-  top: 50%;
+  /* top/bottom 撑满父高，靠 background center 自动居中；改用 top:50%+margin-top:-8px 会在 top 被覆写时残留 8px 偏移 */
+  top: 0;
+  bottom: 0;
   left: .4em;
   width: 16px;
-  height: 16px;
-  margin-top: -8px;
   content: "";
   background: url(../icon/spinner.svg) no-repeat center;
   background-size: 16px;
