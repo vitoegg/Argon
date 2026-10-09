@@ -30,7 +30,7 @@
 <head>
 	{% include("themes/" + theme + "/head_meta", { hostname: hostname, node: node, media: media }) %}
 
-	<link rel="stylesheet" href="{{ media }}/css/cascade.css{# ?v=PKG_VERSION #}">
+	<link rel="stylesheet" href="{{ media }}/css/cascade.css">
 	{% if (node?.css): %}
 	<link rel="stylesheet" href="{{ resource }}/{{ node.css}}">
 	{% endif -%}
