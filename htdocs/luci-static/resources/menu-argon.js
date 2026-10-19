@@ -17,6 +17,20 @@ const SlideAnimations = {
 	},
 
 	/**
+	 * Resolve animation duration, honouring the reduced-motion preference
+	 * @param {string|number} duration - 'fast', 'normal', 'slow' or milliseconds
+	 * @returns {number} Duration in milliseconds
+	 */
+	getDuration: function(duration) {
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+			return 0;
+
+		return typeof duration === 'string' ?
+			(this.durations[duration] || this.durations.normal) :
+			(duration || this.durations.normal);
+	},
+
+	/**
 	 * Map to track running animations and their cleanup functions
 	 */
 	runningAnimations: new WeakMap(),
@@ -37,9 +51,7 @@ const SlideAnimations = {
 		this.stop(element);
 		
 		// Convert duration string to milliseconds
-		const animDuration = typeof duration === 'string' ? 
-			this.durations[duration] || this.durations.normal : 
-			(duration || this.durations.normal);
+		const animDuration = this.getDuration(duration);
 		
 		// Store original styles
 		const originalStyles = {
@@ -103,9 +115,7 @@ const SlideAnimations = {
 		this.stop(element);
 		
 		// Convert duration string to milliseconds
-		const animDuration = typeof duration === 'string' ? 
-			this.durations[duration] || this.durations.normal : 
-			(duration || this.durations.normal);
+		const animDuration = this.getDuration(duration);
 		
 		// Store original styles
 		const originalStyles = {
@@ -196,7 +206,23 @@ return baseclass.extend({
 	 * Load menu data and trigger rendering
 	 */
 	__init__: function () {
+		this.patchDynamicListFocus();
 		ui.menu.load().then(L.bind(this.render, this));
+	},
+
+	/**
+	 * Skip focusing dropdown options that are no longer in the document.
+	 * A DynamicList change handler can consume a newly created option before
+	 * Dropdown.createItems() focuses it, which otherwise throws and leaves the
+	 * typed value in the create input.
+	 */
+	patchDynamicListFocus: function () {
+		var setFocus = ui.Dropdown.prototype.setFocus;
+
+		ui.Dropdown.prototype.setFocus = function (sb, elem) {
+			if (elem.parentNode)
+				return setFocus.apply(this, arguments);
+		};
 	},
 
 	/**
@@ -247,8 +273,6 @@ return baseclass.extend({
 		// Close all currently active submenus
 		var activeMenus = document.querySelectorAll('.main .main-left .nav > li > ul.active');
 		activeMenus.forEach(function (ul) {
-			// Stop any running animations and slide up
-			SlideAnimations.stop(ul);
 			// Remove active classes in callback after slideUp completes,
 			// so display:block is preserved during the height animation
 			SlideAnimations.slideUp(ul, 'fast', function () {
@@ -297,11 +321,17 @@ return baseclass.extend({
 	 */
 	renderMainMenu: function (tree, url, level) {
 		var currentLevel = (level || 0) + 1;
+
+		// Don't render menus deeper than 2 levels
+		if (currentLevel > 2) {
+			return E([]);
+		}
+
 		var menuContainer = E('ul', { 'class': level ? 'slide-menu' : 'nav' });
 		var children = ui.menu.getChildren(tree);
 
-		// Don't render empty menus or menus deeper than 2 levels
-		if (children.length === 0 || currentLevel > 2) {
+		// Don't render empty menus
+		if (children.length === 0) {
 			return E([]);
 		}
 
@@ -346,7 +376,6 @@ return baseclass.extend({
 			var mainMenuElement = document.querySelector('#mainmenu');
 			if (mainMenuElement) {
 				mainMenuElement.appendChild(menuContainer);
-				mainMenuElement.style.display = '';
 			}
 		}
 		

@@ -385,6 +385,11 @@
     }
 }
 
+// Pages rendered without a session, such as 404, have no menu to show.
+body:not(.logged-in) .main-left {
+    display: none;
+}
+
 // 3. Right Content Area Layout
 // ==========================================================================
 

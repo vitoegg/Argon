@@ -21,12 +21,11 @@
 	Licensed to the public under the Apache License 2.0
 -#}
 
-{% include("themes/" + theme + "/out_header_login") %}
 {%
 	const boardinfo = ubus.call("system", "board");
 	const hostname = striptags(boardinfo?.hostname ?? '?');
-
-%}
+-%}
+{% include("themes/" + theme + "/out_header_login", { hostname: hostname }) %}
 <!-- Login Page Start -->
 <div class="login-page">
 	<!-- Image Background Start -->
@@ -41,7 +40,7 @@
 			</a>
 			<!-- Logo End -->
 			<!-- Login Form Start -->
-			<form class="form-login" method="post" action="{{ http.getenv("REQUEST_URI") }}">
+			<form class="form-login" method="post">
 
 				{%- if (fuser): %}
 				<div class="errorbox">{{ _('Invalid username and/or password! Please try again.') }}</div>
@@ -49,11 +48,11 @@
 
 				<div class="input-container">
 					<div class="input-group user-icon">
-						<input class="cbi-input-user" id="cbi-input-user" type="text" name="luci_username" value="{{ entityencode(duser, true) }}" />
+						<input class="cbi-input-user" id="cbi-input-user" type="text" name="luci_username" value="{{ entityencode(duser, true) }}" autocomplete="username" autocapitalize="none" spellcheck="false" aria-label="{{ entityencode(_('Username'), true) }}" />
 						<label class="border" for="cbi-input-user"></label>
 					</div>
 					<div class="input-group pass-icon">
-						<input class="cbi-input-password" id="cbi-input-password" type="password" name="luci_password" />
+						<input class="cbi-input-password" id="cbi-input-password" type="password" name="luci_password" autocomplete="current-password" aria-label="{{ entityencode(_('Password'), true) }}" />
 						<label class="border" for="cbi-input-password"></label>
 					</div>
 				</div>

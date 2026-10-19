@@ -311,11 +311,6 @@ select[multiple="multiple"] {
   width: auto;
 }
 
-#mwan3-service-status > .alert-message {
-  left: 0.5rem;
-  transform: none;
-}
-
 .lg {
   margin: 0;
   padding: 0 !important;
@@ -1502,6 +1497,7 @@ body:not(.Interfaces) .cbi-rowstyle-2:first-child {
   border-left: thin solid #ccc;
 }
 
+// Empty selections use .more; list items stay hidden until the menu opens.
 .cbi-dropdown[empty]>ul {
   max-width: 1px;
 }
@@ -1565,7 +1561,6 @@ body:not(.Interfaces) .cbi-rowstyle-2:first-child {
 
 }
 
-.cbi-dropdown[empty]>ul>li,
 .cbi-dropdown[optional][open]>ul.dropdown>li[placeholder],
 .cbi-dropdown[multiple][open]>ul.dropdown>li>form {
   display: block;
@@ -1999,10 +1994,6 @@ td>.ifacebadge,
 
 #syslog:focus {
   outline: 0;
-}
-
-#cbi-ddns #syslog {
-  overflow: auto;
 }
 
 /* config changes */

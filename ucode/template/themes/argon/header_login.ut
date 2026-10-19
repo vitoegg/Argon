@@ -17,9 +17,7 @@
 -#}
 
 {%
-	const boardinfo = ubus.call("system", "board");
-	const hostname = striptags(boardinfo?.hostname ?? '?');
-
+	// hostname comes from sysauth through the include scope
 	//send as HTML5
 	http.prepare_content('text/html; charset=UTF-8');
 
